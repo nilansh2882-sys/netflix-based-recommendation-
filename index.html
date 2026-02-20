@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Netflix Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #c71d1d, #487fbd);
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        input {
+            padding: 10px;
+            width: 300px;
+            border-radius: 20px;
+            border: 5px;
+            border-color: black;
+            border-width: 4px;
+            border-style:dotted;
+            font-size: 16px;
+            font-family: Georgia, 'Times New Roman', Times,Bold, serif;
+            text-align: center;
+            opacity: 50%;
+            background: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #e50914;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #b20710;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .movie {
+            background-color: rgba(255,255,255,0.1);
+            padding: 10px;
+            margin: 10px auto;
+            width: 300px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Movie Recommender</h1>
+
+<input type="text" id="movieInput">
+<button type="button" onclick="getRecommendations()">Recommend</button>
+
+<div id="results"></div>
+
+<script>
+function getRecommendations() {
+    const movie = document.getElementById("movieInput").value;
+
+    fetch("/recommend", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ search: movie })
+    })
+    .then(response => response.json())
+    .then(data => {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (data.recommendations) {
+        data.recommendations.forEach(movie => {
+            const div = document.createElement("div");
+            div.className = "movie";
+            div.innerText = movie;
+            resultsDiv.appendChild(div);
+        });
+    }
+    })
+
+    .catch(err => console.log(err));
+}
+</script>
+
+</body>
+
+</html>
